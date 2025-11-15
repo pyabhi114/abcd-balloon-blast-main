@@ -21,7 +21,7 @@ const WordDisplay = ({ word, imageUrl, onComplete }: WordDisplayProps) => {
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 500);
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearTimeout(speakTimer);

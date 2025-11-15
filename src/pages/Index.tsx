@@ -109,6 +109,10 @@ const Index = () => {
             )
           ))}
         </div>
+
+        <p className="mt-12 text-center text-muted-foreground text-sm">
+          Made with love by <span className="font-semibold">Abhishek Gogna</span>
+        </p>
       </div>
 
       {selectedLetter && (
