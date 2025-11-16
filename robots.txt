@@ -12,5 +12,3 @@ Allow: /
 
 User-agent: *
 Allow: /
-
-Sitemap: https://pyabhi114.github.io/abcd-balloon-blast-main/sitemap.xml
