@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Balloon from "@/components/Balloon";
 import WordDisplay from "@/components/WordDisplay";
 
@@ -30,56 +30,106 @@ import xylophoneImg from "@/assets/xylophone.jpg";
 import yachtImg from "@/assets/yacht.jpg";
 import zebraImg from "@/assets/zebra.jpg";
 
-const alphabetData = [
-  { letter: "A", word: "Apple", color: "hsl(var(--balloon-red))", image: appleImg },
-  { letter: "B", word: "Ball", color: "hsl(var(--balloon-blue))", image: ballImg },
-  { letter: "C", word: "Cat", color: "hsl(var(--balloon-orange))", image: catImg },
-  { letter: "D", word: "Dog", color: "hsl(var(--balloon-green))", image: dogImg },
-  { letter: "E", word: "Elephant", color: "hsl(var(--balloon-purple))", image: elephantImg },
-  { letter: "F", word: "Fish", color: "hsl(var(--balloon-pink))", image: fishImg },
-  { letter: "G", word: "Grapes", color: "hsl(var(--balloon-yellow))", image: grapesImg },
-  { letter: "H", word: "Hat", color: "hsl(var(--balloon-red))", image: hatImg },
-  { letter: "I", word: "Ice Cream", color: "hsl(var(--balloon-blue))", image: icecreamImg },
-  { letter: "J", word: "Jellyfish", color: "hsl(var(--balloon-orange))", image: jellyfishImg },
-  { letter: "K", word: "Kite", color: "hsl(var(--balloon-green))", image: kiteImg },
-  { letter: "L", word: "Lion", color: "hsl(var(--balloon-purple))", image: lionImg },
-  { letter: "M", word: "Monkey", color: "hsl(var(--balloon-pink))", image: monkeyImg },
-  { letter: "N", word: "Nest", color: "hsl(var(--balloon-yellow))", image: nestImg },
-  { letter: "O", word: "Orange", color: "hsl(var(--balloon-red))", image: orangeImg },
-  { letter: "P", word: "Penguin", color: "hsl(var(--balloon-blue))", image: penguinImg },
-  { letter: "Q", word: "Queen", color: "hsl(var(--balloon-orange))", image: queenImg },
-  { letter: "R", word: "Rainbow", color: "hsl(var(--balloon-green))", image: rainbowImg },
-  { letter: "S", word: "Sun", color: "hsl(var(--balloon-purple))", image: sunImg },
-  { letter: "T", word: "Tree", color: "hsl(var(--balloon-pink))", image: treeImg },
-  { letter: "U", word: "Umbrella", color: "hsl(var(--balloon-yellow))", image: umbrellaImg },
-  { letter: "V", word: "Violin", color: "hsl(var(--balloon-red))", image: violinImg },
-  { letter: "W", word: "Whale", color: "hsl(var(--balloon-blue))", image: whaleImg },
-  { letter: "X", word: "Xylophone", color: "hsl(var(--balloon-orange))", image: xylophoneImg },
-  { letter: "Y", word: "Yacht", color: "hsl(var(--balloon-green))", image: yachtImg },
-  { letter: "Z", word: "Zebra", color: "hsl(var(--balloon-purple))", image: zebraImg },
+type Item = { label: string; word: string; color: string; image?: string; colorSwatch?: string };
+
+const alphabetData: Item[] = [
+  { label: "A", word: "Apple", color: "hsl(var(--balloon-red))", image: appleImg },
+  { label: "B", word: "Ball", color: "hsl(var(--balloon-blue))", image: ballImg },
+  { label: "C", word: "Cat", color: "hsl(var(--balloon-orange))", image: catImg },
+  { label: "D", word: "Dog", color: "hsl(var(--balloon-green))", image: dogImg },
+  { label: "E", word: "Elephant", color: "hsl(var(--balloon-purple))", image: elephantImg },
+  { label: "F", word: "Fish", color: "hsl(var(--balloon-pink))", image: fishImg },
+  { label: "G", word: "Grapes", color: "hsl(var(--balloon-yellow))", image: grapesImg },
+  { label: "H", word: "Hat", color: "hsl(var(--balloon-red))", image: hatImg },
+  { label: "I", word: "Ice Cream", color: "hsl(var(--balloon-blue))", image: icecreamImg },
+  { label: "J", word: "Jellyfish", color: "hsl(var(--balloon-orange))", image: jellyfishImg },
+  { label: "K", word: "Kite", color: "hsl(var(--balloon-green))", image: kiteImg },
+  { label: "L", word: "Lion", color: "hsl(var(--balloon-purple))", image: lionImg },
+  { label: "M", word: "Monkey", color: "hsl(var(--balloon-pink))", image: monkeyImg },
+  { label: "N", word: "Nest", color: "hsl(var(--balloon-yellow))", image: nestImg },
+  { label: "O", word: "Orange", color: "hsl(var(--balloon-red))", image: orangeImg },
+  { label: "P", word: "Penguin", color: "hsl(var(--balloon-blue))", image: penguinImg },
+  { label: "Q", word: "Queen", color: "hsl(var(--balloon-orange))", image: queenImg },
+  { label: "R", word: "Rainbow", color: "hsl(var(--balloon-green))", image: rainbowImg },
+  { label: "S", word: "Sun", color: "hsl(var(--balloon-purple))", image: sunImg },
+  { label: "T", word: "Tree", color: "hsl(var(--balloon-pink))", image: treeImg },
+  { label: "U", word: "Umbrella", color: "hsl(var(--balloon-yellow))", image: umbrellaImg },
+  { label: "V", word: "Violin", color: "hsl(var(--balloon-red))", image: violinImg },
+  { label: "W", word: "Whale", color: "hsl(var(--balloon-blue))", image: whaleImg },
+  { label: "X", word: "Xylophone", color: "hsl(var(--balloon-orange))", image: xylophoneImg },
+  { label: "Y", word: "Yacht", color: "hsl(var(--balloon-green))", image: yachtImg },
+  { label: "Z", word: "Zebra", color: "hsl(var(--balloon-purple))", image: zebraImg },
+];
+
+const fruitsData: Item[] = [
+  { label: "A", word: "Apple", color: "hsl(var(--balloon-red))", image: appleImg },
+  { label: "G", word: "Grapes", color: "hsl(var(--balloon-yellow))", image: grapesImg },
+  { label: "O", word: "Orange", color: "hsl(var(--balloon-red))", image: orangeImg },
+];
+
+const animalsData: Item[] = [
+  { label: "C", word: "Cat", color: "hsl(var(--balloon-orange))", image: catImg },
+  { label: "D", word: "Dog", color: "hsl(var(--balloon-green))", image: dogImg },
+  { label: "E", word: "Elephant", color: "hsl(var(--balloon-purple))", image: elephantImg },
+  { label: "F", word: "Fish", color: "hsl(var(--balloon-pink))", image: fishImg },
+  { label: "L", word: "Lion", color: "hsl(var(--balloon-purple))", image: lionImg },
+  { label: "M", word: "Monkey", color: "hsl(var(--balloon-pink))", image: monkeyImg },
+  { label: "P", word: "Penguin", color: "hsl(var(--balloon-blue))", image: penguinImg },
+  { label: "W", word: "Whale", color: "hsl(var(--balloon-blue))", image: whaleImg },
+  { label: "Z", word: "Zebra", color: "hsl(var(--balloon-purple))", image: zebraImg },
+];
+
+const colorsData: Item[] = [
+  { label: "R", word: "Red", color: "hsl(var(--balloon-red))", colorSwatch: "hsl(var(--balloon-red))" },
+  { label: "B", word: "Blue", color: "hsl(var(--balloon-blue))", colorSwatch: "hsl(var(--balloon-blue))" },
+  { label: "G", word: "Green", color: "hsl(var(--balloon-green))", colorSwatch: "hsl(var(--balloon-green))" },
+  { label: "Y", word: "Yellow", color: "hsl(var(--balloon-yellow))", colorSwatch: "hsl(var(--balloon-yellow))" },
+  { label: "O", word: "Orange", color: "hsl(var(--balloon-orange))", colorSwatch: "hsl(var(--balloon-orange))" },
+  { label: "P", word: "Purple", color: "hsl(var(--balloon-purple))", colorSwatch: "hsl(var(--balloon-purple))" },
+  { label: "P", word: "Pink", color: "hsl(var(--balloon-pink))", colorSwatch: "hsl(var(--balloon-pink))" },
 ];
 
 const Index = () => {
-  const [selectedLetter, setSelectedLetter] = useState<typeof alphabetData[0] | null>(null);
+  const [category, setCategory] = useState<"Alphabet" | "Fruits" | "Animals" | "Colors">("Alphabet");
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [hiddenBalloons, setHiddenBalloons] = useState<Set<string>>(new Set());
 
-  const speakLetter = (letter: string) => {
-    const utterance = new SpeechSynthesisUtterance(letter);
+  const currentData = useMemo(() => {
+    switch (category) {
+      case "Fruits":
+        return fruitsData;
+      case "Animals":
+        return animalsData;
+      case "Colors":
+        return colorsData;
+      default:
+        return alphabetData;
+    }
+  }, [category]);
+
+  const speakOut = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.8;
     utterance.pitch = 1.2;
     window.speechSynthesis.speak(utterance);
   };
 
-  const handleBalloonClick = (item: typeof alphabetData[0]) => {
-    speakLetter(item.letter);
-    setSelectedLetter(item);
+  const handleBalloonClick = (item: Item) => {
+    // Wait briefly so the pop animation and sound are visible/audible before overlay appears
+    window.setTimeout(() => setSelectedItem(item), 550);
   };
 
   const handleDisplayComplete = () => {
-    if (selectedLetter) {
-      setHiddenBalloons(prev => new Set(prev).add(selectedLetter.letter));
-      setSelectedLetter(null);
+    if (selectedItem) {
+      setHiddenBalloons(prev => new Set(prev).add(selectedItem.word));
+      setSelectedItem(null);
     }
+  };
+
+  const changeCategory = (next: typeof category) => {
+    setCategory(next);
+    setHiddenBalloons(new Set());
+    setSelectedItem(null);
   };
 
   return (
@@ -90,19 +140,34 @@ const Index = () => {
       <div className="absolute bottom-32 left-1/4 w-36 h-22 bg-white/40 rounded-full blur-sm"></div>
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <h1 className="text-6xl font-bold text-center mb-4 text-foreground drop-shadow-lg">
-          🎈 ABC Learning Adventure! 🎈
+        <h1 className="text-5xl md:text-6xl font-bold text-center mb-4 text-foreground drop-shadow-lg">
+          🎈 {category} Learning Adventure! 🎈
         </h1>
-        <p className="text-2xl text-center mb-12 text-muted-foreground">
+        <p className="text-xl md:text-2xl text-center mb-8 text-muted-foreground">
           Click on a balloon to learn!
         </p>
 
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+          {(["Alphabet", "Fruits", "Animals", "Colors"] as const).map((c) => (
+            <button
+              key={c}
+              onClick={() => changeCategory(c)}
+              className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold shadow ${
+                category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground hover:bg-muted/80"
+              }`}
+              aria-pressed={category === c}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-8 justify-items-center">
-          {alphabetData.map((item) => (
-            !hiddenBalloons.has(item.letter) && (
+          {currentData.map((item) => (
+            !hiddenBalloons.has(item.word) && (
               <Balloon
-                key={item.letter}
-                letter={item.letter}
+                key={item.word}
+                letter={item.label}
                 color={item.color}
                 onClick={() => handleBalloonClick(item)}
               />
@@ -115,10 +180,11 @@ const Index = () => {
         </p>
       </div>
 
-      {selectedLetter && (
+      {selectedItem && (
         <WordDisplay
-          word={selectedLetter.word}
-          imageUrl={selectedLetter.image}
+          word={selectedItem.word}
+          imageUrl={selectedItem.image}
+          colorSwatch={selectedItem.colorSwatch}
           onComplete={handleDisplayComplete}
         />
       )}

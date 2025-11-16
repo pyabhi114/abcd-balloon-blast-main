@@ -2,26 +2,30 @@ import { useEffect, useState } from "react";
 
 interface WordDisplayProps {
   word: string;
-  imageUrl: string;
+  imageUrl?: string;
+  colorSwatch?: string;
   onComplete: () => void;
 }
 
-const WordDisplay = ({ word, imageUrl, onComplete }: WordDisplayProps) => {
+const WordDisplay = ({ word, imageUrl, colorSwatch, onComplete }: WordDisplayProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Speak the word after a short delay
+    // Speak the word after a short delay, cancelling any previous speech
     const speakTimer = setTimeout(() => {
-      const utterance = new SpeechSynthesisUtterance(`It's ${word}`);
-      utterance.rate = 0.8;
-      utterance.pitch = 1.2;
-      window.speechSynthesis.speak(utterance);
-    }, 500);
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(`It's ${word}`);
+        utterance.rate = 0.8;
+        utterance.pitch = 1.2;
+        window.speechSynthesis.speak(utterance);
+      }
+    }, 600);
 
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 500);
-    }, 10000);
+    }, 6000);
 
     return () => {
       clearTimeout(speakTimer);
@@ -38,11 +42,18 @@ const WordDisplay = ({ word, imageUrl, onComplete }: WordDisplayProps) => {
       `}
     >
       <div className="text-center animate-zoom-in">
-        <img
-          src={imageUrl}
-          alt={word}
-          className="w-80 h-80 object-cover rounded-3xl shadow-2xl mb-8 mx-auto"
-        />
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={word}
+            className="w-80 h-80 object-cover rounded-3xl shadow-2xl mb-8 mx-auto"
+          />
+        ) : (
+          <div
+            className="w-80 h-80 rounded-3xl shadow-2xl mb-8 mx-auto border"
+            style={{ backgroundColor: colorSwatch }}
+          />
+        )}
         <h2 className="text-6xl font-bold text-foreground drop-shadow-lg">
           {word}
         </h2>
